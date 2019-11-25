@@ -574,8 +574,9 @@ later is required to fix a server side protocol bug.
     if opt.jobs:
       self.jobs = opt.jobs
     if self.jobs > 1:
-      soft_limit, _ = _rlimit_nofile()
-      self.jobs = min(self.jobs, (soft_limit - 5) / 3)
+      # soft_limit, _ = _rlimit_nofile()
+      # self.jobs = min(self.jobs, (soft_limit - 5) / 3)
+      self.jobs = 1
 
     if opt.network_only and opt.detach_head:
       print('error: cannot combine -n and -d', file=sys.stderr)
