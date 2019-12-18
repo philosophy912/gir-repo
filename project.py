@@ -650,6 +650,7 @@ class Project(object):
                relpath,
                revisionExpr,
                revisionId,
+               access=None,  # added by liluo 2019-12-16
                rebase=True,
                groups=None,
                sync_c=False,
@@ -673,6 +674,7 @@ class Project(object):
       relpath: Relative path of git working tree to repo's top directory.
       revisionExpr: The `revision` attribute of manifest.xml's project element.
       revisionId: git commit id for checking out.
+      access: The 'access' attribute of manifest.xml's project element.  # added by liluo 2019-12-16
       rebase: The `rebase` attribute of manifest.xml's project element.
       groups: The `groups` attribute of manifest.xml's project element.
       sync_c: The `sync-c` attribute of manifest.xml's project element.
@@ -704,7 +706,9 @@ class Project(object):
       self.revisionId = revisionExpr
     else:
       self.revisionId = revisionId
-
+    # ------------------------add code here by liluo 2019-12-16--------------------------
+    self.access = access
+    # ---------------------------------end code 2019-12-16-------------------------------
     self.rebase = rebase
     self.groups = groups
     self.sync_c = sync_c
@@ -797,6 +801,26 @@ class Project(object):
     if self._userident_email is None:
       self._LoadUserIdentity()
     return self._userident_email
+
+  # --------------------add code here by liluo 2019-12-16-------------------
+  @property
+  def UserGroup(self):
+    error_info = "\nERROR : user.group not exists, please config as follows:\n"
+    error_info += "<git config --global user.group 'common/hmi/audio/media/system/bsp'>\n"
+    try:
+      user_group_name = self.bare_git.config('user.group')
+      user_group_name = str(user_group_name).lower()
+      if user_group_name not in ('common', 'hmi', 'audio', 'media', 'system', 'bsp'):
+        print(error_info)
+        exit(100)
+      return user_group_name
+    except GitError as ge:
+      if self.UserName == 'test':
+        return 'common'
+      else:
+        print(error_info)
+        exit(101)
+  # -----------------------end code 2019-12-16------------------------------
 
   def _LoadUserIdentity(self):
     u = self.bare_git.var('GIT_COMMITTER_IDENT')

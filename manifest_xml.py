@@ -537,6 +537,13 @@ class XmlManifest(object):
     for node in itertools.chain(*node_list):
       if node.nodeName == 'project':
         project = self._ParseProject(node)
+        # ---------------------------add code here by liluo 2019-12-16---------------------------------------
+        if project.access != project.UserGroup \
+             and project.access != 'common' \
+             and project.UserGroup != 'common' \
+             and project.access:
+          continue
+        # ---------------------------------end code 2019-12-16-----------------------------------------------
         recursively_add_projects(project)
       if node.nodeName == 'extend-project':
         name = self._reqatt(node, 'name')
@@ -763,6 +770,16 @@ class XmlManifest(object):
       raise ManifestParseError("project %s path cannot be absolute in %s" %
             (name, self.manifestFile))
 
+    # ------------------------add code here by liluo 2019-12-16----------------------------
+    access = node.getAttribute('access')
+    if not access:
+      access = None
+    else:
+      access = access.lower()
+    if self.manifestProject.UserName == "test":
+      access = "common"
+    # ------------------------------end code 2019-12-16------------------------------------
+
     rebase = node.getAttribute('rebase')
     if not rebase:
       rebase = True
@@ -822,6 +839,7 @@ class XmlManifest(object):
                       relpath = relpath,
                       revisionExpr = revisionExpr,
                       revisionId = None,
+                      access=access,  # -------add by liluo 2019-12-16
                       rebase = rebase,
                       groups = groups,
                       sync_c = sync_c,
