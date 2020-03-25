@@ -806,7 +806,8 @@ class Project(object):
   @property
   def UserGroup(self):
     error_info = "\nERROR : user.group not exists, please config as follows:\n"
-    error_info += "<git config --global user.group 'common/hmi/audio/media/system/bsp'>\n"
+    error_info += "git config --global user.group <group>\n"
+    error_info += "<group> must one in (common,hmi,audio,media,system,bsp)\n"
     try:
       user_group_name = self.bare_git.config('user.group')
       user_group_name = str(user_group_name).lower()
