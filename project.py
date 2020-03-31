@@ -24,6 +24,8 @@ import shutil
 import stat
 import subprocess
 import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 import tarfile
 import tempfile
 import time
