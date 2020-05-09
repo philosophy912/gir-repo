@@ -19,6 +19,7 @@ import os
 import portable
 import re
 import sys
+import shutil
 import xml.dom.minidom
 
 from pyversion import is_python3
@@ -542,6 +543,9 @@ class XmlManifest(object):
              and project.access != 'common' \
              and project.UserGroup != 'common' \
              and project.access:
+          # delete the worktree if the project is control access project
+          if os.path.exists(project.worktree):
+            shutil.rmtree(project.worktree)
           continue
         # ---------------------------------end code 2019-12-16-----------------------------------------------
         recursively_add_projects(project)
