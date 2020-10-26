@@ -221,6 +221,9 @@ later is required to fix a server side protocol bug.
     p.add_option('-m', '--manifest-name',
                  dest='manifest_name',
                  help='temporary manifest to use for this sync', metavar='NAME.xml')
+    p.add_option('-M', '--external-manifest',
+                 dest='external_manifest',
+                 help='sync the access code history', metavar='NAME.xml')
     p.add_option('--no-clone-bundle',
                  dest='no_clone_bundle', action='store_true',
                  help='disable use of /clone.bundle on HTTP/HTTPS')
@@ -780,6 +783,21 @@ later is required to fix a server side protocol bug.
         to_fetch.append(rp)
       to_fetch.extend(all_projects)
       to_fetch.sort(key=self._fetch_times.Get, reverse=True)
+
+      # delete access code,  modify by liaofei@bdstar.com at  2020/10/26
+      if opt.external_manifest:
+        self.manifest.Override(opt.external_manifest)
+        external_project = self.GetProjects(args,
+                                            missing_ok=True,
+                                            submodules_ok=opt.fetch_submodules)
+
+        access_project_name = [p.name for p in external_project]
+
+        # remove the access project from to_fetch
+        for project in to_fetch:
+          if not project.name in access_project_name:
+            to_fetch.remove(project)
+      # modify by liaofei end
 
       fetched = self._Fetch(to_fetch, opt)
       _PostRepoFetch(rp, opt.no_repo_verify)
