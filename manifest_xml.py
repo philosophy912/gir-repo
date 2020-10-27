@@ -255,6 +255,10 @@ class XmlManifest(object):
 
       e = doc.createElement('project')
       parent_node.appendChild(e)
+      # add by liaofei@bdstar.com for access attribute at 2020/10/27
+      if p.access:
+        e.setAttribute('access', p.access)
+      # add by liaofei end
       e.setAttribute('name', name)
       if relpath != name:
         e.setAttribute('path', relpath)
@@ -540,7 +544,6 @@ class XmlManifest(object):
         project = self._ParseProject(node)
         # ---------------------------add code here by liluo 2019-12-16---------------------------------------
         if project.access != project.UserGroup \
-             and project.access != 'common' \
              and project.UserGroup != 'common' \
              and project.access:
           # delete the worktree if the project is control access project
@@ -780,8 +783,6 @@ class XmlManifest(object):
       access = None
     else:
       access = access.lower()
-    if self.manifestProject.UserName == "test":
-      access = "common"
     # ------------------------------end code 2019-12-16------------------------------------
 
     rebase = node.getAttribute('rebase')
