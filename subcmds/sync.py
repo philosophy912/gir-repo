@@ -786,7 +786,11 @@ later is required to fix a server side protocol bug.
 
       # delete access code,  modify by liaofei@bdstar.com at  2020/10/26
       if opt.external_manifest:
-        self.manifest.Override(opt.external_manifest)
+        external_manifest = os.path.join(mp.worktree, opt.external_manifest)
+        if not os.path.exists(external_manifest):
+          print("Error : %s not found" % external_manifest)
+          sys.exit(1)
+        self.manifest.Override(external_manifest)
         external_project = self.GetProjects(args,
                                             missing_ok=True,
                                             submodules_ok=opt.fetch_submodules)
