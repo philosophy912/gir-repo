@@ -816,6 +816,12 @@ later is required to fix a server side protocol bug.
         all_projects = self.GetProjects(args,
                                         missing_ok=True,
                                         submodules_ok=opt.fetch_submodules)
+        # add by liaofei@bdstar.com at 2020/11/3 for remove access project
+        if opt.external_manifest:
+          for project in all_projects:
+            if not project.name in access_project_name:
+              all_projects.remove(project)
+        # add by liaofei end
         missing = []
         for project in all_projects:
           if project.gitdir not in fetched:
