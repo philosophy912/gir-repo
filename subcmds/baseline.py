@@ -11,7 +11,7 @@ import os
 from command import Command
 from git_command import GitCommand
 
-USER = subprocess.Popen("git config user.name",shell=True, stdout=subprocess.PIPE).communicate()[0]
+USER = subprocess.Popen("git config user.name",shell=True, stdout=subprocess.PIPE).communicate()[0].strip()
 
 class Baseline(Command):
   helpUsage = """
