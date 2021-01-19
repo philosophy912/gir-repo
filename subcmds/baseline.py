@@ -11,6 +11,8 @@ import os
 from command import Command
 from git_command import GitCommand
 
+USER = subprocess.Popen("git config user.name",shell=True, stdout=subprocess.PIPE).communicate()[0]
+
 class Baseline(Command):
   helpUsage = """
 %prog [-o --out-file] outfile [-l --last-release] last_manifest [-c --current-release] current_manifest
@@ -42,7 +44,7 @@ class Baseline(Command):
         cmd = ["ssh"]
         cmd.append("-p")
         cmd.append("29418")
-        cmd.append("$(git config user.name)@10.100.193.154")
+        cmd.append("%s@10.100.193.154" % USER)
         cmd.append("gerrit")
         cmd.append("create-branch")
         cmd.append(project.name)
